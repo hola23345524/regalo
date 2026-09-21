@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Un detalle especial para ti 💛💜</title>
+  <style>
+    :root {
+      --lila-base: #c8a2c8;
+      --lila-pastel: #e6e6fa;
+      --lila-oscuro: #8a2be2;
+      --lila-profundo: #4a2e5a;
+      --lila-suave: #f3e8ff;
+      --lila-envoltura: #b892e2;
+      --lila-envoltura-clara: #d8b4f8;
+      --amarillo-base: #facc15;
+      --amarillo-brillante: #fef08a;
+      --amarillo-oscuro: #eab308;
+      --blanco: #ffffff;
+      --verde-tallo: #386928;
+      --verde-hoja: #4d8b35;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, var(--lila-suave) 0%, var(--lila-pastel) 50%, #ecd9fa 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* DECORACIÓN DE TULIPANES AMARILLOS EN BORDES */
+    .tulip-decorations {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .corner-tulips {
+      position: absolute;
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+    }
+
+    .corner-top-left { top: -15px; left: -10px; transform: rotate(135deg); }
+    .corner-top-right { top: -15px; right: -10px; transform: rotate(-135deg); }
+    .corner-bottom-left { bottom: -15px; left: -10px; transform: rotate(45deg); }
+    .corner-bottom-right { bottom: -15px; right: -10px; transform: rotate(-45deg); }
+
+    .side-tulips-left, .side-tulips-right {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      opacity: 0.85;
+    }
+
+    .side-tulips-left { left: 15px; }
+    .side-tulips-right { right: 15px; }
+
+    /* COMPONENTE TULIPÁN AMARILLO CSS */
+    .tulip {
+      position: relative;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .tulip-head {
+      width: 32px;
+      height: 42px;
+      background: linear-gradient(135deg, var(--amarillo-base), var(--amarillo-brillante));
+      border-radius: 0 0 20px 20px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 -4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .tulip-head::before, .tulip-head::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      width: 18px;
+      height: 34px;
+      background: var(--amarillo-oscuro);
+      border-radius: 20px 20px 0 0;
+      opacity: 0.85;
+    }
+
+    .tulip-head::before { left: -3px; transform: rotate(-12deg); }
+    .tulip-head::after { right: -3px; transform: rotate(12deg); }
+
+    .stem {
+      width: 5px;
+      height: 55px;
+      background: linear-gradient(to bottom, var(--verde-hoja), var(--verde-tallo));
+      border-radius: 3px;
+    }
+
+    .leaf {
+      position: absolute;
+      width: 16px;
+      height: 32px;
+      background: var(--verde-tallo);
+      border-radius: 0 20px;
+      bottom: 10px;
+      left: 2px;
+      transform: rotate(-35deg);
+    }
+
+    /* TARJETA PRINCIPAL */
+    .card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      padding: 35px 28px;
+      border-radius: 24px;
+      box-shadow: 0 15px 35px rgba(138, 43, 226, 0.2), 0 0 0 2px var(--amarillo-base);
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+      position: relative;
+      z-index: 10;
+    }
+
+    .card-tulip-border {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .card-tulip-border .tulip { transform: scale(0.7); }
+
+    .step {
+      display: none;
+      animation: fadeIn 0.5s ease-in-out forwards;
+    }
+
+    .step.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 {
+      color: var(--lila-profundo);
+      margin-bottom: 18px;
+      font-size: 1.35rem;
+      line-height: 1.4;
+      font-weight: 700;
+    }
+
+    p {
+      color: var(--lila-profundo);
+      font-size: 1.05rem;
+      line-height: 1.6;
+      margin-bottom: 22px;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, var(--amarillo-base), var(--amarillo-oscuro));
+      color: var(--lila-profundo);
+      border: none;
+      padding: 13px 26px;
+      font-size: 1.02rem;
+      font-weight: 700;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(234, 179, 8, 0.4);
+      transition: all 0.3s ease;
+      margin: 8px 5px;
+      display: inline-block;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 8px 20px rgba(234, 179, 8, 0.5);
+    }
+
+    .stitch-gif {
+      width: 170px;
+      height: 170px;
+      max-width: 100%;
+      object-fit: contain;
+      margin: 10px auto 18px;
+      display: block;
+      border-radius: 16px;
+    }
+
+    /* ESTILOS DEL JUEGO */
+    #game-container {
+      position: relative;
+      width: 100%;
+      height: 180px;
+      background: #f3e8ff;
+      border: 3px solid var(--lila-base);
+      border-radius: 16px;
+      overflow: hidden;
+      margin: 15px 0;
+    }
+
+    #game-canvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ELEMENTO DEL JUGADOR PARA PERMITIR GIF ANIMADO */
+    #player-gif {
+      position: absolute;
+      width: 32px;
+      height: 35px;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    /* MODAL FLOTANTE (VENTANA EMERGENTE) */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(74, 46, 90, 0.65);
+      backdrop-filter: blur(4px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .modal-card {
+      background: var(--blanco);
+      padding: 25px;
+      border-radius: 20px;
+      max-width: 380px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    /* RAMO DE FLORES EN IMAGEN */
+    .bouquet-img {
+      width: 280px;
+      max-width: 100%;
+      height: auto;
+      margin: 10px auto 20px;
+      display: block;
+      border-radius: 16px;
+    }
+
+    @media (max-width: 600px) {
+      body { padding: 12px; }
+      .card { padding: 24px 18px; }
+      .side-tulips-left, .side-tulips-right { display: none; }
+      .corner-tulips { transform: scale(0.65); }
+      .btn { width: 100%; max-width: 280px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="tulip-decorations">
+    <div class="corner-tulips corner-top-left">
+      <div class="tulip"><div class="tulip-head"></div><div class="stem"><div class="leaf"></div></div></div>
+      <div class="tulip"><div class="tulip-head"></div><div class="stem"><div class="leaf"></div></div></div>
+    </div>
+    <div class="corner-tulips corner-top-right">
+      <div class="tulip"><div class="tulip-head"></div><div class="stem"><div class="leaf"></div></div></div>
+      <div class="tulip"><div class="tulip-head"></div><div class="stem"><div class="leaf"></div></div></div>
+    </div>
+    <div class="corner-tulips corner-bottom-left">
+      <div class="tulip"><div class="tulip-head"></div><div class="stem"><div class="leaf"></div></div></div>
+      <div class="tulip"><div class="tulip-head"></div><div class="stem"><div class="leaf"></div></div></div>
+    </div>
+    <div class="corner-tulips corner-bottom-right">
+      <div class="tulip"><div class="tulip-head"></div><div class="stem"><div class="leaf"></div></div></div>
+      <div class="tulip"><div class="tulip-head"></div><div class="stem"><div class="leaf"></div></div></div>
+    </div>
+
+    <div class="side-tulips-left">
+      <div class="tulip"><div class="tulip-head"></div><div class="stem"><div class="leaf"></div></div></div>
+      <div class="tulip"><div class="tulip-head"></div><div class="stem"><div class="leaf"></div></div></div>
+    </div>
+    <div class="side-tulips-right">
+      <div class="tulip"><div class="tulip-head"></div><div class="stem"><div class="leaf"></div></div></div>
+      <div class="tulip"><div class="tulip-head"></div><div class="stem"><div class="leaf"></div></div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-tulip-border">
+      <div class="tulip"><div class="tulip-head"></div></div>
+      <div class="tulip"><div class="tulip-head"></div></div>
+      <div class="tulip"><div class="tulip-head"></div></div>
+    </div>
+
+    <div id="step-intro" class="step active">
+      <img class="stitch-gif" src="https://media.tenor.com/4WBxPZwXYB0AAAAM/i-love-you.gif" alt="Stitch saludando">
+      <p>Hola corazón espero que tu día vaya muy bien y bonito tengo algo para ti 💛</p>
+      <button class="btn" onclick="openGameSection()">Continuar</button>
+    </div>
+
+    <div id="step-game" class="step">
+      <h2>¡Esquiva los obstáculos! </h2>
+      <div id="game-container">
+        <img id="player-gif" src="https://media.tenor.com/nRbxbNMYMF0AAAAj/stitch-run.gif" alt="Stitch Corriendo">
+        <canvas id="game-canvas" width="400" height="180"></canvas>
+      </div>
+      <button class="btn" onclick="triggerJump()">Saltar </button>
+    </div>
+
+    <div id="step-final" class="step">
+      <img class="bouquet-img" src="./rosas.png" alt="Ramo de flores amarillas">
+
+      <p>esto es para ti corazón, se que no son físicas pero espero te guste, lo hice con mucho cariño para ti, por ciertas situaciones sabes que no podemos vernos hoy pero espero podamos hacerlo pronto porque ya te extraño</p>
+      <p><strong>realmente espero te gusten 💛</strong></p>
+    </div>
+  </div>
+
+  <div id="game-modal" class="modal-overlay">
+    <div class="modal-card">
+      <img id="modal-gif" class="stitch-gif" src="https://i.pinimg.com/originals/a4/c4/7d/a4c47d0fd9bfa16b96f1c6c285d50331.gif" alt="Stitch">
+      <p id="modal-text">Mensaje...</p>
+      <button id="modal-btn" class="btn" onclick="handleModalButtonClick()">Aceptar</button>
+    </div>
+  </div>
+
+  <script>
+    let currentModalState = 'INSTRUCTIONS';
+
+    function openGameSection() {
+      document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+      document.getElementById('step-game').classList.add('active');
+      
+      showModal(
+        'https://i.pinimg.com/originals/a4/c4/7d/a4c47d0fd9bfa16b96f1c6c285d50331.gif',
+        'Te invito a jugar, aquí te doy las instrucciones, para iniciar el juego presiona enter, para saltar presiona enter o el botón de abajo. ¡Mucho éxito!',
+        '¡A jugar!',
+        'INSTRUCTIONS'
+      );
+    }
+
+    function showModal(gifUrl, text, btnText, state) {
+      currentModalState = state;
+      document.getElementById('modal-gif').src = gifUrl;
+      document.getElementById('modal-text').innerText = text;
+      document.getElementById('modal-btn').innerText = btnText;
+      document.getElementById('game-modal').style.display = 'flex';
+    }
+
+    function handleModalButtonClick() {
+      document.getElementById('game-modal').style.display = 'none';
+
+      if (currentModalState === 'INSTRUCTIONS' || currentModalState === 'RESTART') {
+        startGame();
+      } else if (currentModalState === 'WIN') {
+        goToFinalStep();
+      }
+    }
+
+    function goToFinalStep() {
+      document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+      document.getElementById('step-final').classList.add('active');
+    }
+
+    /* LÓGICA DEL JUEGO */
+    const canvas = document.getElementById('game-canvas');
+    const ctx = canvas.getContext('2d');
+    const playerGif = document.getElementById('player-gif');
+
+    let gameRunning = false;
+    let gameTime = 0;
+    let timerInterval = null;
+    let animationFrame = null;
+
+    let floatingBannerText = "";
+    let bannerTimer = null;
+
+    const player = {
+      x: 30,
+      y: 120,
+      width: 32,
+      height: 35,
+      dy: 0,
+      gravity: 0.55,
+      jumpForce: -10.5,
+      grounded: true
+    };
+
+    let obstacles = [];
+    let obstacleTimer = 0;
+
+    function updatePlayerDOMPosition() {
+      const scaleX = canvas.clientWidth / canvas.width;
+      const scaleY = canvas.clientHeight / canvas.height;
+
+      playerGif.style.left = (player.x * scaleX) + 'px';
+      playerGif.style.top = (player.y * scaleY) + 'px';
+      playerGif.style.width = (player.width * scaleX) + 'px';
+      playerGif.style.height = (player.height * scaleY) + 'px';
+    }
+
+    function startGame() {
+      resetGame();
+      gameRunning = true;
+      startTimer();
+      gameLoop();
+    }
+
+    function showBannerMessage(text) {
+      floatingBannerText = text;
+      if (bannerTimer) clearTimeout(bannerTimer);
+      bannerTimer = setTimeout(() => {
+        floatingBannerText = "";
+      }, 3500);
+    }
+
+    function gameOver() {
+      gameRunning = false;
+      clearInterval(timerInterval);
+      cancelAnimationFrame(animationFrame);
+      showModal(
+        'https://i.pinimg.com/originals/d5/fb/83/d5fb83e26bfd4ec440abaec15bdc0f21.gif',
+        'acabas de chocar con un ostaculo, pero no te preocupes intentalo de nuevo',
+        'Intentar de nuevo',
+        'RESTART'
+      );
+    }
+
+    function startTimer() {
+      timerInterval = setInterval(() => {
+        gameTime++;
+        
+        if (gameTime === 20) {
+          showBannerMessage("lo estas haciendo bien pero aun falta para el final");
+        } else if (gameTime === 40) {
+          showBannerMessage("muuy bien pero aun falta");
+        } else if (gameTime === 60) {
+          showBannerMessage("excelente veo que no te rindes");
+        } else if (gameTime === 75) {
+          showBannerMessage("bueno te falta muy poco para llegar al final");
+        } else if (gameTime >= 90) {
+          endGameWin();
+        }
+      }, 1000);
+    }
+
+    function resetGame() {
+      gameTime = 0;
+      obstacles = [];
+      floatingBannerText = "";
+      player.y = 120;
+      player.dy = 0;
+      player.grounded = true;
+      updatePlayerDOMPosition();
+      clearInterval(timerInterval);
+      if (bannerTimer) clearTimeout(bannerTimer);
+      cancelAnimationFrame(animationFrame);
+    }
+
+    function triggerJump() {
+      if (gameRunning && player.grounded) {
+        player.dy = player.jumpForce;
+        player.grounded = false;
+      }
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const modal = document.getElementById('game-modal');
+        if (modal.style.display === 'flex') {
+          handleModalButtonClick();
+        } else {
+          triggerJump();
+        }
+      }
+    });
+
+    function gameLoop() {
+      if (!gameRunning) return;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Suelo
+      ctx.fillStyle = "#8a2be2";
+      ctx.fillRect(0, 155, canvas.width, 25);
+
+      // Movimiento Stitch
+      player.dy += player.gravity;
+      player.y += player.dy;
+
+      if (player.y >= 120) {
+        player.y = 120;
+        player.dy = 0;
+        player.grounded = true;
+      }
+
+      // Actualizar posición física de la imagen GIF animada de Stitch
+      updatePlayerDOMPosition();
+
+      // Generación de Obstáculos
+      obstacleTimer++;
+      if (obstacleTimer > 130) {
+        obstacles.push({ x: canvas.width, y: 132, width: 16, height: 23 });
+        obstacleTimer = 0;
+      }
+
+      for (let i = 0; i < obstacles.length; i++) {
+        let obs = obstacles[i];
+        obs.x -= 2.6;
+
+        ctx.fillStyle = "#eab308";
+        ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
+
+        // Detección de colisión tolerante
+        const padding = 4;
+        if (
+          player.x + padding < obs.x + obs.width &&
+          player.x + player.width - padding > obs.x &&
+          player.y + padding < obs.y + obs.height &&
+          player.y + player.height - padding > obs.y
+        ) {
+          gameOver();
+          return;
+        }
+      }
+
+      obstacles = obstacles.filter(obs => obs.x > -20);
+
+      // CARTEL FLOTANTE EN PANTALLA
+      if (floatingBannerText !== "") {
+        ctx.fillStyle = "rgba(74, 46, 90, 0.88)";
+        ctx.fillRect(10, 8, canvas.width - 20, 28);
+        ctx.strokeStyle = "#facc15";
+        ctx.lineWidth = 1;
+        ctx.strokeRect(10, 8, canvas.width - 20, 28);
+
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 11px sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText(floatingBannerText, canvas.width / 2, 26);
+      }
+
+      animationFrame = requestAnimationFrame(gameLoop);
+    }
+
+    function endGameWin() {
+      gameRunning = false;
+      clearInterval(timerInterval);
+      cancelAnimationFrame(animationFrame);
+      showModal(
+        'https://i.pinimg.com/originals/36/08/e0/3608e05c00a7430ff25d2bfcaa4e42b1.gif',
+        '¡Excelentee, lo hiciste super bien! Has ganado el juego 💛',
+        'Ver mi regalo 🎁',
+        'WIN'
+      );
+    }
+  </script>
+</body>
+</html>
